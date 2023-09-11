@@ -23,7 +23,7 @@ greets:
 	@echo "*──────────────────────────────────────────*"
 	@echo "*──────────────────────────────────────────*"
 
-setup:
+setup: check-commands
 	@echo "$(YELLOW)Git 설정 중...$(RESET)"
 	@git config --global user.email "rkdmf0000@gmail.com"
 	@git config --global user.name "taxi_tabby"
@@ -36,14 +36,14 @@ check-commands:
 	@echo "$(CYAN)go가 사용 가능한지 확인 중...$(RESET)"
 	@go version > /dev/null || (echo "$(RED)오류: go가 사용 가능하지 않습니다. 설치해주세요.$(RESET)" && exit 1)
 
-proto: proto-clean $(PROTO_FILES)
+proto: proto-clean check-commands $(PROTO_FILES)
 	@echo "$(MAGENTA).proto 파일 컴파일 시작...$(RESET)"
 	@for file in $(PROTO_FILES); do \
 		echo "$(MAGENTA)$$file 컴파일 중...$(RESET)"; \
 		protoc --go_out=paths=source_relative:. $$file; \
 	done
 
-build: proto-clean
+build: proto-clean check-commands
 	@echo "$(BLUE)main.go 빌드 중...$(RESET)"
 	@go build -o result main.go
 
