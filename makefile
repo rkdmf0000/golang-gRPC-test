@@ -56,7 +56,7 @@ proto-clean:
 	@rm -f $(GENERATED_GO)
 
 deploy-to-git: check-commands
-	@echo "$(CYAN)GitHub에 업로드 중...$(RESET)"
+	@echo "$(YELLOW)GitHub에 업로드 중...$(RESET)"
 	@git add . && git commit -m " Immediately deployed on $(shell date)" && git push -u origin master
 
 .PHONY: all setup proto build clean proto-clean check-commands deploy
