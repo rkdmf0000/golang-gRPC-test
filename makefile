@@ -12,6 +12,9 @@ RESET = \033[0m
 PROTO_FILES = $(wildcard proto/*.proto)
 GENERATED_GO = $(wildcard proto/*.pb.go)
 
+GITEMAIL = "rkdmf0000@gmail.com"
+GITUSER = "taxi_tabby"
+
 all: greets check-commands setup proto-clean proto build
 
 greets:
@@ -25,8 +28,11 @@ greets:
 
 setup: check-commands
 	@echo "$(YELLOW)Git 설정 중...$(RESET)"
-	@git config --global user.email "rkdmf0000@gmail.com"
-	@git config --global user.name "taxi_tabby"
+	@git config --global user.email "$(GITEMAIL)"
+	@git config --global user.name "$(GITUSER)"
+	@echo "$(YELLOW)Git 설정 완료 (user.email, user.name 을 사전에 정의된 대로 global 로 설정합니다)$(RESET)"
+	@echo "- user.email $(GITEMAIL)"
+	@echo "- user.name $(GITUSER)"
 
 check-commands:
 	@echo "$(CYAN)git이 사용 가능한지 확인 중...$(RESET)"
@@ -62,4 +68,4 @@ deploy-to-git: check-commands
 	@git push -u origin master
 	@echo "$(YELLOW)업로드 완료...$(RESET)"
 
-.PHONY: all setup proto build clean proto-clean check-commands deploy
+.PHONY: all setup proto build clean proto-clean check-commands deploy-to-git
