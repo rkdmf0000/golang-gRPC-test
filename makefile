@@ -60,6 +60,6 @@ deploy-to-git: check-commands
 	@git add .
 	@git commit -m " Immediately deployed on $(shell date)"
 	@git push -u origin master
-	@echo "$(YELLOW)GitHub에 완료...$(RESET)"
+	@echo "$(YELLOW)업로드 완료...$(RESET)"
 
 .PHONY: all setup proto build clean proto-clean check-commands deploy
