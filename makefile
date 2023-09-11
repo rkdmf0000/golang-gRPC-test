@@ -57,6 +57,9 @@ proto-clean:
 
 deploy-to-git: check-commands
 	@echo "$(YELLOW)GitHub에 업로드 중...$(RESET)"
-	@git add . && git commit -m " Immediately deployed on $(shell date)" && git push -u origin master
+	@git add .
+	@git commit -m " Immediately deployed on $(shell date)"
+	@git push -u origin master
+	@echo "$(YELLOW)GitHub에 완료...$(RESET)"
 
 .PHONY: all setup proto build clean proto-clean check-commands deploy
