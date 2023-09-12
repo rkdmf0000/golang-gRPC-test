@@ -46,9 +46,14 @@ proto: proto-clean check-commands $(PROTO_FILES)
 	@echo "$(MAGENTA).proto 파일 컴파일 시작...$(RESET)"
 	@for file in $(PROTO_FILES); do \
 		echo "$(MAGENTA)$$file 컴파일 중...$(RESET)"; \
-		protoc --go_out=paths=source_relative:. $$file; \
-		protoc --proto_path=./proto $$file --plugin="/root/go/bin/protoc-gen-go-grpc" --go-grpc_out=paths=source_relative:./proto; \
-		protoc --proto_path=./proto $$file --plugin="/root/go/bin/protoc-gen-go" --go_out=paths=source_relative:./proto; \
+		protoc --proto_path=./proto $$file \
+		--grpc-gateway_out ./proto \
+		--grpc-gateway_opt logtostderr=true \
+		--grpc-gateway_opt paths=source_relative \
+		--plugin="/root/go/bin/protoc-gen-go-grpc" \
+		--go-grpc_out=paths=source_relative:./proto \
+		--plugin="/root/go/bin/protoc-gen-go" \
+		--go_out=paths=source_relative:./proto;\
 	done
 
 build: proto-clean check-commands
