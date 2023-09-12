@@ -18,15 +18,15 @@ GOPATH = "/root/go/"
 
 #default: greets check-commands env-setup setup proto-clean proto build
 default:
-	@echo "all : 자동으로 설치 및 빌드까지 완료합니다"
-	@echo "setup : 깃허브 설정을 완수합니다"
-	@echo "check-commands : 필수적인 명령어가 설치되었는지 확인합니다"
-	@echo "proto : proto 파일을 빌드합니다"
-	@echo "build : main.go 파일을 빌드합니다"
-	@echo "clean : 실행파일을 제거합니다"
-	@echo "proto-clean : 빌드된 proto 파일을 제거합니다"
-	@echo "push-to-git-origiin : 깃허브의 정의된 온라인 브런치에 모든 상태를 푸시합니다"
-	@echo "env-setup : 해당 프로젝트에서 요구하는 빌드 환경을 다운로드 및 설치합니다"
+	@echo "$(YELLOW)all$(RESET) : 자동으로 설치 및 빌드까지 완료합니다"
+	@echo "$(YELLOW)setup$(RESET) : 깃허브 설정을 완수합니다"
+	@echo "$(YELLOW)check-commands$(RESET) : 필수적인 명령어가 설치되었는지 확인합니다"
+	@echo "$(YELLOW)proto$(RESET) : proto 파일을 빌드합니다"
+	@echo "$(YELLOW)build$(RESET) : main.go 파일을 빌드합니다"
+	@echo "$(YELLOW)clean$(RESET) : 실행파일을 제거합니다"
+	@echo "$(YELLOW)proto-clean$(RESET) : 빌드된 proto 파일을 제거합니다"
+	@echo "$(YELLOW)push-to-git-origiin$(RESET) : 깃허브의 정의된 온라인 브런치에 모든 상태를 푸시합니다"
+	@echo "$(YELLOW)env-setup$(RESET) : 해당 프로젝트에서 요구하는 빌드 환경을 다운로드 및 설치합니다"
 	
 	
 
