@@ -68,6 +68,6 @@ deploy-to-git: check-commands
 	@git add .
 	@git commit -m " Immediately deployed on $(shell date)" > /dev/null || (echo "$(RED)깃허브 파일에 변동이 없습니다$(RESET)")
 	@git push -u origin master
-	@echo "$(YELLOW)업로드 완료...$(RESET)"
+	@echo "$(YELLOW)실행 완료...$(RESET)"
 
 .PHONY: all setup proto build clean proto-clean check-commands deploy-to-git
