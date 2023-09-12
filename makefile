@@ -66,7 +66,7 @@ proto-clean:
 deploy-to-git: check-commands
 	@echo "$(YELLOW)GitHub에 업로드 중...$(RESET)"
 	@git add .
-	@git commit -m " Immediately deployed on $(shell date)" > /dev/null
+	@git commit -m " Immediately deployed on $(shell date)" > /dev/null || (echo "$(RED)xxxxxx$(RESET)")
 	@git push -u origin master
 	@echo "$(YELLOW)업로드 완료...$(RESET)"
 
