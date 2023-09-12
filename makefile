@@ -72,10 +72,10 @@ proto-clean:
 	@echo "$(GREEN)proto/ 내 생성된 .go 파일 정리 중...$(RESET)"
 	@rm -f $(GENERATED_GO)
 
-deploy-to-git: check-commands
+push-to-git-origiin: check-commands
 	@echo "$(YELLOW)GitHub에 업로드 중...$(RESET)"
 	@git add .
-	@git commit -m " Immediately deployed on $(shell date)" > /dev/null || (echo "$(RED)깃허브 파일에 변동이 없습니다$(RESET)")
+	@git commit -m " Immediately push on $(shell date)" > /dev/null || (echo "$(RED)깃허브 파일에 변동이 없습니다$(RESET)")
 	@git push -u origin master
 	@echo "$(YELLOW)실행 완료...$(RESET)"
 
@@ -92,4 +92,4 @@ setup: check-commands
 	@go mod tidy
 	@echo "$(YELLOW)실행 완료...$(RESET)"
 
-.PHONY: all setup proto build clean proto-clean check-commands deploy-to-git setup
+.PHONY: all setup proto build clean proto-clean check-commands push-to-git-origiin setup
