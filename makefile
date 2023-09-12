@@ -15,6 +15,8 @@ GENERATED_GO = $(wildcard proto/*.pb.go)
 GITEMAIL = "rkdmf0000@gmail.com"
 GITUSER = "taxi_tabby"
 
+GOPATH = "/root/go/"
+
 all: greets check-commands setup proto-clean proto build
 
 greets:
@@ -22,6 +24,8 @@ greets:
 	@echo "*──────────────────────────────────────────*"
 	@echo "*──────────────────────────────────────────*"
 	@echo "$(CYAN)빌드 실행 시간 : $(shell date) $(RESET)"
+	@echo "$(CYAN)GOROOT : $(GOPATH) $(RESET)"
+	
 	@echo "*──────────────────────────────────────────*"
 	@echo "*──────────────────────────────────────────*"
 	@echo "*──────────────────────────────────────────*"
@@ -50,9 +54,9 @@ proto: proto-clean check-commands $(PROTO_FILES)
 		--grpc-gateway_out ./proto \
 		--grpc-gateway_opt logtostderr=true \
 		--grpc-gateway_opt paths=source_relative \
-		--plugin="/root/go/bin/protoc-gen-go-grpc" \
+		--plugin="$(GOPATH)/bin/protoc-gen-go-grpc" \
 		--go-grpc_out=paths=source_relative:./proto \
-		--plugin="/root/go/bin/protoc-gen-go" \
+		--plugin="$(GOPATH)/bin/protoc-gen-go" \
 		--go_out=paths=source_relative:./proto;\
 	done
 
@@ -75,4 +79,17 @@ deploy-to-git: check-commands
 	@git push -u origin master
 	@echo "$(YELLOW)실행 완료...$(RESET)"
 
-.PHONY: all setup proto build clean proto-clean check-commands deploy-to-git
+setup: check-commands
+	@echo "$(YELLOW)환경 초기 설정 실행...$(RESET)"
+	@go get -d -u github.com/golang/protobuf/protoc-gen-go
+	@go get -d -u github.com/golang/protobuf/proto
+	@go get -u google.golang.org/grpc
+	@go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
+	@go get github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway
+	@go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
+	@export PATH="$PATH:$(go env GOPATH)/bin"
+	@go mod tidy
+	@echo "$(YELLOW)실행 완료...$(RESET)"
+
+.PHONY: all setup proto build clean proto-clean check-commands deploy-to-git setup
