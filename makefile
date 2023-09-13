@@ -9,8 +9,7 @@ MAGENTA = \033[35m
 CYAN = \033[36m
 RESET = \033[0m
 
-PROTO_FILES = $(wildcard proto/*.proto)
-GENERATED_GO = $(wildcard proto/*.pb.go)
+PROTO_FILES = $(wildcard proto/**/*.proto)
 
 GITEMAIL = "rkdmf0000@gmail.com"
 GITUSER = "taxi_tabby"
@@ -66,7 +65,9 @@ proto: proto-clean check-commands $(PROTO_FILES)
 	@echo "$(MAGENTA).proto 파일 컴파일 시작...$(RESET)"
 	@for file in $(PROTO_FILES); do \
 		echo "$(MAGENTA)$$file 컴파일 중...$(RESET)"; \
-		protoc --proto_path=$(PATHOFPROTOS) $$file \
+		protoc \
+		-I./proto \
+		--proto_path=$(PATHOFPROTOS) $$file \
 		--grpc-gateway_out $(PATHOFPROTOS) \
 		--grpc-gateway_opt logtostderr=true \
 		--grpc-gateway_opt paths=source_relative \
@@ -76,7 +77,8 @@ proto: proto-clean check-commands $(PROTO_FILES)
 		--go_out=paths=source_relative:$(PATHOFPROTOS);\
 	done
 
-build: proto-clean check-commands
+
+build: check-commands proto-clean proto
 	@echo "$(BLUE)$(BUILDENTER) 빌드 중...$(RESET)"
 	@go build -o $(BUILDEXECUTIONFILENAME) $(BUILDENTER)
 
@@ -86,7 +88,7 @@ clean:
 
 proto-clean:
 	@echo "$(GREEN)$(PATHOFPROTOS) 내 생성된 .go 파일 정리 중...$(RESET)"
-	@rm -f $(GENERATED_GO)
+	@find $(PATHOFPROTOS) -type f -name '*.pb.go' -delete
 
 push-to-git-origin: check-commands
 	@echo "$(YELLOW)GitHub에 업로드 중...$(RESET)"

@@ -2,12 +2,15 @@ package main
 
 import (
 	"context"
-	"log"
-	"net"
+	"flag"
+	"net/http"
 
+	"github.com/golang/glog"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 
-	userpb "gprcServer/proto"
+	userpb "gprcServer/proto/user"
 )
 
 const portNumber = "20000"
@@ -79,18 +82,33 @@ func (s *userServer) ListUsers(ctx context.Context, req *userpb.ListUsersRequest
 	}, nil
 }
 
-func main() {
-	lis, err := net.Listen("tcp", ":"+portNumber)
+var (
+	grpcServerEndpoint = flag.String("grpc-server-endpoint", "localhost:9090", "gRPC server endpoint")
+)
+
+func run() error {
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	// Register gRPC server endpoint
+	// Note: Make sure the gRPC server is running properly and accessible
+	mux := runtime.NewServeMux()
+	opts := []grpc.DialOption{grpc.WithTransportCredentials(insecure.NewCredentials())}
+	err := userpb.RegisterUserHandlerFromEndpoint(ctx, mux, *grpcServerEndpoint, opts)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		return err
 	}
 
-	grpcServer := grpc.NewServer()
+	// Start HTTP server (and proxy calls to gRPC server endpoint)
+	return http.ListenAndServe(":20000", mux)
+}
 
-	userpb.RegisterUserServer(grpcServer, &userServer{})
+func main() {
+	flag.Parse()
+	defer glog.Flush()
 
-	log.Printf("start gRPC server on %s port", portNumber)
-	if err := grpcServer.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %s", err)
+	if err := run(); err != nil {
+		glog.Fatal(err)
 	}
 }
