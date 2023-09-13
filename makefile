@@ -27,7 +27,7 @@ help:
 	@echo "$(YELLOW)build$(RESET) : main.go 파일을 빌드합니다"
 	@echo "$(YELLOW)clean$(RESET) : 실행파일을 제거합니다"
 	@echo "$(YELLOW)proto-clean$(RESET) : 빌드된 proto 파일을 제거합니다"
-	@echo "$(YELLOW)push-to-git-origiin$(RESET) : 깃허브의 정의된 온라인 브런치에 모든 상태를 푸시합니다"
+	@echo "$(YELLOW)push-to-git-origin$(RESET) : 깃허브의 정의된 온라인 브런치에 모든 상태를 푸시합니다"
 	@echo "$(YELLOW)env-setup$(RESET) : 해당 프로젝트에서 요구하는 빌드 환경을 다운로드 및 설치합니다"
 	@echo "$(YELLOW)install-protobuf$(RESET) : 프로젝트에 필요한 protobuf를 설치합니다"
 	
@@ -88,7 +88,7 @@ proto-clean:
 	@echo "$(GREEN)$(PATHOFPROTOS) 내 생성된 .go 파일 정리 중...$(RESET)"
 	@rm -f $(GENERATED_GO)
 
-push-to-git-origiin: check-commands
+push-to-git-origin: check-commands
 	@echo "$(YELLOW)GitHub에 업로드 중...$(RESET)"
 	@git add .
 	@git commit -m " Immediately pushed on $(shell date)" > /dev/null || (echo "$(RED)깃허브 파일에 변동이 없습니다$(RESET)")
@@ -133,4 +133,4 @@ install-protobuf:
 	fi
 
 
-.PHONY: all greets setup env-setup check-commands proto build clean proto-clean push-to-git-origiin install-protobuf
+.PHONY: all greets setup env-setup check-commands proto build clean proto-clean push-to-git-origin install-protobuf
