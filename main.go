@@ -69,7 +69,7 @@ func main() {
 
 	if err != nil {
 		fmt.Println(dsn)
-		panic("could not connect to the database")
+		panic(err.Error())
 	}
 
 	_ = db

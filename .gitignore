@@ -6,6 +6,8 @@
 *.dylib
 result
 
+.env
+
 # Test binary
 *_test
 
