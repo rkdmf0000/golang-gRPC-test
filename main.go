@@ -3,84 +3,24 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
 	userpb "gprcServer/proto/user"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
-
-const portNumber = "20000"
-
-var UserData = []*userpb.UserMessage{
-	{
-		UserId:      "1",
-		Name:        "Henry",
-		PhoneNumber: "01012341234",
-		Age:         22,
-	},
-	{
-		UserId:      "2",
-		Name:        "Michael",
-		PhoneNumber: "01098128734",
-		Age:         55,
-	},
-	{
-		UserId:      "3",
-		Name:        "Jessie",
-		PhoneNumber: "01056785678",
-		Age:         15,
-	},
-	{
-		UserId:      "4",
-		Name:        "Max",
-		PhoneNumber: "01099999999",
-		Age:         37,
-	},
-	{
-		UserId:      "5",
-		Name:        "Tony",
-		PhoneNumber: "01012344321",
-		Age:         25,
-	},
-}
-
-type userServer struct {
-	userpb.UserServer
-}
-
-// GetUser returns user message by user_id
-func (s *userServer) GetUser(ctx context.Context, req *userpb.GetUserRequest) (*userpb.GetUserResponse, error) {
-	userID := req.UserId
-
-	var userMessage *userpb.UserMessage
-	for _, u := range UserData {
-		if u.UserId != userID {
-			continue
-		}
-		userMessage = u
-		break
-	}
-
-	return &userpb.GetUserResponse{
-		UserMessage: userMessage,
-	}, nil
-}
-
-// ListUsers returns all user messages
-func (s *userServer) ListUsers(ctx context.Context, req *userpb.ListUsersRequest) (*userpb.ListUsersResponse, error) {
-	userMessages := make([]*userpb.UserMessage, len(UserData))
-	for i, u := range UserData {
-		userMessages[i] = u
-	}
-
-	return &userpb.ListUsersResponse{
-		UserMessages: userMessages,
-	}, nil
-}
 
 var (
 	grpcServerEndpoint = flag.String("grpc-server-endpoint", "localhost:9090", "gRPC server endpoint")
@@ -105,6 +45,35 @@ func run() error {
 }
 
 func main() {
+
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	var dsn = fmt.Sprintf("%s:%s@tcp(%s)/%s", os.Getenv("DB_ACCOUNT_MAIN_ID"), os.Getenv("DB_ACCOUNT_MAIN_PWD"), os.Getenv("DB_ACCOUNT_MAIN_IP"), os.Getenv("DB_ACCOUNT_MAIN_DB"))
+
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+		logger.Config{
+			SlowThreshold: time.Second,
+			LogLevel:      logger.Silent,
+			Colorful:      false,
+		},
+	)
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: newLogger,
+	})
+
+	if err != nil {
+		fmt.Println(dsn)
+		panic("could not connect to the database")
+	}
+
+	_ = db
+
 	flag.Parse()
 	defer glog.Flush()
 
